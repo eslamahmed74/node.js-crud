@@ -1,10 +1,23 @@
 import Cart from '../models/carts-model.js';
 
+export const getCarts = async (req, res) => {
+  try {
+    const carts = await Cart.find()
+      .populate('userId', 'name email')
+      .populate('items.productId', 'name price');
+    res.json(carts);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 export const getCart = async (req, res) => {
   const userId = req.params.userId;
 
   try {
-    const userCart = await Cart.findOne({ userId });
+    const userCart = await Cart.findOne({ userId })
+      .populate('userId', 'name email')
+      .populate('items.productId', 'name price');
     if (!userCart) return res.status(404).send('Cart not found for user');
 
     res.send(userCart.items);

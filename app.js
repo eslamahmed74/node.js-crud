@@ -6,6 +6,9 @@ import { UserRouter } from './routes/users-route.js';
 import { CartRouter } from './routes/cart-route.js';
 import mongoose from 'mongoose';
 import { seed } from './seed.js';
+import { notFound } from './middleWares/notfound.js';
+import { errorHandler } from './middleWares/errorHandler.js';
+import setupSwagger from './swagger.js';
 
 dotenv.config();
 
@@ -28,6 +31,11 @@ app.use('/api', CategoryRouter);
 app.use('/api', UserRouter);
 app.use('/api', CartRouter);
 
-app.listen( 5000, () =>
+setupSwagger(app);
+
+app.use(notFound);
+app.use(errorHandler);
+
+app.listen(5000, () =>
   console.log(`server is running on port ${process.env.PORT || 3000}`)
 );

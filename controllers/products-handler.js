@@ -5,7 +5,7 @@ let productId = 14;
 
 export const getAllProduct = async (req, res) => {
   try {
-    const products = await Product.find();
+    const products = await Product.find().populate('categoryId', 'name');
     res.send(products);
   } catch (e) {
     console.log(e);
@@ -67,14 +67,10 @@ export const getProductBySearch = async (req, res) => {
 export const getProductById = async (req, res) => {
   const { id } = req.params;
 
-  try {
-    const product = await Product.findById(id);
-    if (!product) return res.status(404).send('Product not found');
+  const product = await Product.findById(id).populate('categoryId', 'name');
+  if (!product) return res.status(404).send('Product not found');
 
-    res.send(product);
-  } catch (err) {
-    res.status(500).send('Server error');
-  }
+  res.send(product);
 };
 
 export const updateProduct = async (req, res) => {
